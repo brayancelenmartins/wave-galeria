@@ -1,0 +1,18 @@
+# dependências e build
+node_modules
+.next
+out
+*.tsbuildinfo
+
+# variáveis de ambiente (chaves do Supabase): nunca enviar
+.env
+.env*.local
+
+# arquivos soltos
+*.zip
+*.tgz
+.DS_Store
+
+# copia antiga extraida dentro do projeto
+/wave-galeria
+/prisma

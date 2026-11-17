@@ -1,0 +1,15 @@
+# Blueprint do Render (opcional): em Render > New > Blueprint, aponte para este repositório.
+services:
+  - type: web
+    name: wave-galeria
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 22.12.0
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
