@@ -1,7 +1,8 @@
 "use client";
 import { X } from "lucide-react";
 import { useState } from "react";
-import ArtImage from "@/components/art/ArtImage";
+import ImageDrop from "./ImageDrop";
+import { orientationOf } from "@/lib/upload";
 import { FRAME_IDS, FRAMES, SIZE_IDS, SIZES, STATUS, STATUS_IDS, STYLES, WORLD_IDS, WORLDS } from "@/lib/constants";
 import { DEFAULT_DIMS } from "@/lib/data/artworks";
 import { cn } from "@/lib/format";
@@ -50,8 +51,14 @@ export default function ArtworkForm({ initial, title, onSave, onClose }: { initi
           <L label="Coleção" className="sm:col-span-2"><select className="field" value={d.world} onChange={(e) => set("world", e.target.value as Artwork["world"])}>{WORLD_IDS.map((w) => <option key={w} value={w}>{WORLDS[w].label}</option>)}</select></L>
           <L label="Formato" className="sm:col-span-2"><select className="field" value={d.orientation} onChange={(e) => setOrientation(e.target.value as Orientation)}><option value="retrato">Retrato</option><option value="paisagem">Paisagem</option><option value="quadrado">Quadrado</option></select></L>
 
-          <L label="Imagem (URL ou caminho em /public)" className="sm:col-span-5"><input className="field" placeholder="https://images.unsplash.com/… ou /img/art/arquivo.jpg" value={d.image} onChange={(e) => set("image", e.target.value)} /></L>
-          <div className="sm:col-span-1"><span className="label">Prévia</span><ArtImage src={d.image} alt={d.title || "Prévia"} className="h-[46px] w-full" /></div>
+          <div className="sm:col-span-6">
+            <span className="label">Imagem da obra</span>
+            <ImageDrop value={d.image} onChange={(url, img) => {
+              set("image", url);
+              // ajusta o formato da moldura às proporções da foto enviada
+              if (img) setOrientation(orientationOf(img.width, img.height));
+            }} />
+          </div>
 
           <L label="Preço base (R$, tamanho médio)" className="sm:col-span-2"><input type="number" min={0} step={10} required className="field" value={d.basePrice} onChange={(e) => set("basePrice", Number(e.target.value))} /></L>
           <L label="Estoque" className="sm:col-span-1"><input type="number" min={0} className="field" value={d.stock} onChange={(e) => set("stock", Number(e.target.value))} /></L>

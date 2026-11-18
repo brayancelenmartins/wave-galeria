@@ -122,3 +122,29 @@ values
   ('obra-15', 'retrato-em-luz-baixa', 'Retrato em Luz Baixa', 'June Okafor', 2026, 'Retrato', 'usa', 'Fotografia, impressão em papel algodão', 'Um rosto, uma janela e nada mais. Da série feita em estúdios emprestados no Brooklyn.', 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1400&q=80', 'retrato', 4200, '[{"id":"P","w":30,"h":40},{"id":"M","w":50,"h":70},{"id":"G","w":80,"h":110},{"id":"X","w":100,"h":140}]'::jsonb, '["sem","preta","branca","madeira"]'::jsonb, 'disponivel', 2, 'Edição de 8', 860, false, '2026-07-07T00:00:00.000Z'),
   ('obra-16', 'color-field-n-7', 'Color Field nº 7', 'June Okafor', 2025, 'Minimalista', 'usa', 'Óleo sobre tela', 'Campos de cor que vibram na borda. Pede parede grande, luz natural e distância.', 'https://images.unsplash.com/photo-1536924940846-227afb31e2a5?auto=format&fit=crop&w=1400&q=80', 'paisagem', 5800, '[{"id":"P","w":40,"h":30},{"id":"M","w":70,"h":50},{"id":"G","w":110,"h":80},{"id":"X","w":140,"h":100}]'::jsonb, '["sem","preta","branca","madeira"]'::jsonb, 'disponivel', 1, 'Obra original', 690, true, '2026-06-28T00:00:00.000Z')
 on conflict (id) do nothing;
+
+-- 5. Imagens das obras (Supabase Storage) ----------------------------------
+-- bucket público: qualquer visitante vê as imagens; só o admin envia, troca ou apaga
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('obras', 'obras', true, 15728640, array['image/webp', 'image/jpeg', 'image/png', 'image/gif', 'image/avif'])
+on conflict (id) do update
+  set public = excluded.public,
+      file_size_limit = excluded.file_size_limit,
+      allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "obras: admin lista imagens" on storage.objects;
+create policy "obras: admin lista imagens" on storage.objects for select to authenticated
+  using (bucket_id = 'obras' and public.is_admin());
+
+drop policy if exists "obras: admin envia imagens" on storage.objects;
+create policy "obras: admin envia imagens" on storage.objects for insert to authenticated
+  with check (bucket_id = 'obras' and public.is_admin());
+
+drop policy if exists "obras: admin troca imagens" on storage.objects;
+create policy "obras: admin troca imagens" on storage.objects for update to authenticated
+  using (bucket_id = 'obras' and public.is_admin())
+  with check (bucket_id = 'obras' and public.is_admin());
+
+drop policy if exists "obras: admin apaga imagens" on storage.objects;
+create policy "obras: admin apaga imagens" on storage.objects for delete to authenticated
+  using (bucket_id = 'obras' and public.is_admin());

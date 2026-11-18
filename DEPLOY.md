@@ -10,7 +10,9 @@ Tempo estimado: 30 a 40 minutos. Tudo cabe nos planos gratuitos.
 1. Crie uma conta em https://supabase.com e clique em **New project**.
    Dê um nome (ex.: `wave`), crie uma senha de banco (guarde-a) e escolha a região **South America (São Paulo)**.
 2. Abra **SQL Editor > New query**, cole **todo** o conteúdo de `supabase/schema.sql` e clique em **Run**.
-   Isso cria as tabelas `artworks`, `orders` e `admins`, as regras de segurança e já insere as 16 obras do catálogo.
+   Isso cria as tabelas `artworks`, `orders` e `admins`, as regras de segurança, o armazenamento de imagens (bucket `obras`)
+   e já insere as 16 obras do catálogo.
+   **Já tinha rodado o `schema.sql` antes?** Rode também `supabase/storage.sql`, que cria só o armazenamento das imagens.
 3. Crie o seu usuário: **Authentication > Users > Add user > Create new user**.
    Informe seu e-mail e uma senha forte e marque **Auto Confirm User**.
 4. Autorize esse e-mail como administrador. De volta ao **SQL Editor**, rode (com o seu e-mail):
@@ -101,7 +103,8 @@ Alternativa: **New > Blueprint** usa o arquivo `render.yaml` do projeto e já pr
   Entre com o **e-mail e a senha criados no passo 1.3**. Só e-mails da tabela `admins` passam.
 - **No seu computador, sem Supabase configurado:** `http://localhost:3000/admin` abre direto, sem login (modo demonstração: o que você altera fica só no seu navegador).
 
-No painel: **Métricas** (faturamento, vendas, obras mais vistas), **Obras** (adicionar, editar, remover) e **Pedidos** (dados do cliente e status: Pago → Em produção → Enviado → Entregue). **Sair** fica no menu lateral.
+No painel: **Métricas** (faturamento, vendas, obras mais vistas), **Obras** (adicionar, editar, remover; a imagem é enviada
+direto do computador ou do celular, inclusive fotos HEIC do iPhone) e **Pedidos** (dados do cliente e status: Pago → Em produção → Enviado → Entregue). **Sair** fica no menu lateral.
 
 **Outro administrador:** repita os passos 1.3 e 1.4 com o e-mail da pessoa.
 **Remover acesso:** `delete from public.admins where email = '...';`
@@ -122,7 +125,7 @@ No painel: **Métricas** (faturamento, vendas, obras mais vistas), **Obras** (ad
   nesse momento, recalcular os preços no servidor, porque hoje o total vem do navegador do cliente.
 - **Frete:** a tabela por CEP é simulada. Troque por uma cotação real (Correios, Melhor Envio).
 - **E-mails:** o site ainda não envia confirmação de pedido.
-- **Imagens:** as obras Brasil/USA apontam para fotos do Unsplash; troque pelas fotos das suas obras em Admin > Obras
-  (suba os arquivos em Supabase > Storage, em um bucket público, e cole a URL). As colagens de `public/img/mundo/` mostram
+- **Imagens:** as obras Brasil/USA apontam para fotos do Unsplash; troque pelas fotos das suas obras em Admin > Obras > editar >
+  Imagem da obra. As colagens de `public/img/mundo/` mostram
   marcas e um atleta reais: confirme as licenças antes do uso comercial.
 - **LGPD:** os pedidos guardam nome, e-mail, telefone e endereço. Publique uma política de privacidade.

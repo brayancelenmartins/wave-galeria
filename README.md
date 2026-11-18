@@ -42,7 +42,7 @@ src/
 │   ├── layout/          Header, Footer, CartDrawer, SearchOverlay, WorldTransition, Toast
 │   ├── art/             ArtCard, Frame (moldura), RoomMockup (ambiente), ZoomImage, ArtImage
 │   ├── home/            Hero, Featured, WorldCards
-│   ├── admin/           AdminGate (login), ArtworkForm, Charts
+│   ├── admin/           AdminGate (login), ArtworkForm, ImageDrop, Charts
 │   └── ui/              Reveal, SectionTitle, PageHead
 ├── lib/
 │   ├── types.ts         tipos (Artwork, Order, CartItem…)
@@ -50,6 +50,7 @@ src/
 │   ├── pricing.ts       regra de preço (tamanho × moldura)
 │   ├── shipping.ts      frete simulado por CEP
 │   ├── supabase.ts      cliente do Supabase (nulo no modo demonstração)
+│   ├── upload.ts        envio de imagens (HEIC, rotação, compressão, Storage)
 │   └── data/            obras e pedidos de exemplo  ← edite aqui o catálogo inicial
 └── store/               Zustand: catalog, cart, favorites, orders, ui
 supabase/schema.sql      tabelas, regras de acesso e catálogo inicial do Supabase
@@ -60,6 +61,9 @@ public/img/              hero, logo, obras locais, colagens dos mundos
 ## Dados
 
 - **Sem configuração** (modo demonstração): catálogo, carrinho, favoritos e pedidos ficam no `localStorage` do navegador e `/admin` abre sem login.
+- **Imagens das obras:** em Admin > Obras, escolha o arquivo, arraste ou cole (Ctrl+V). Aceita JPG, PNG, WEBP, GIF, AVIF
+  e HEIC do iPhone; a imagem é girada conforme a câmera, reduzida e convertida para WEBP antes de subir.
+  Com Supabase vai para o bucket `obras`; no modo demonstração fica no navegador.
 - **Com Supabase** (`.env.local` preenchido): obras e pedidos ficam no banco, o checkout grava pela função `place_order`
   e `/admin` exige login de um e-mail autorizado. A estrutura está em `supabase/schema.sql`.
 
